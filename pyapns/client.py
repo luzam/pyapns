@@ -2,7 +2,6 @@ import xmlrpc.client
 import threading
 import http.client
 import functools
-from sys import hexversion
 
 OPTIONS = {'CONFIGURED': False, 'TIMEOUT': 20}
 
@@ -142,12 +141,8 @@ def ServerProxy(url, *args, **kwargs):
 
 class TimeoutTransport(xmlrpc.client.Transport):
   def make_connection(self, host):
-    if hexversion < 0x02070000:
-        conn = TimeoutHTTP(host)
-        conn.set_timeout(self.timeout)
-    else:
-        conn = TimeoutHTTPConnection(host)
-        conn.timeout = self.timeout
+    conn = TimeoutHTTPConnection(host)
+    conn.timeout = self.timeout
     return conn
 
 class TimeoutHTTPConnection(http.client.HTTPConnection):
@@ -155,9 +150,5 @@ class TimeoutHTTPConnection(http.client.HTTPConnection):
     http.client.HTTPConnection.connect(self)
     self.sock.settimeout(self.timeout)
   
-class TimeoutHTTP(http.client.HTTP):
-  _connection_class = TimeoutHTTPConnection
-  
-  def set_timeout(self, timeout):
-    self._conn.timeout = timeout
+
   
