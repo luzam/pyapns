@@ -1,6 +1,6 @@
-import xmlrpclib
+import xmlrpc.client
 import threading
-import httplib
+import http.client
 import functools
 from sys import hexversion
 
@@ -59,7 +59,7 @@ def reprovision_and_retry(func):
           for initial in OPTIONS['INITIAL']:
             provision(*initial) # retry provisioning the initial setup
           func(*a, **kw) # and try the function once more
-        except Exception, new_exc:
+        except Exception as new_exc:
           errback(new_exc) # throwing the new exception
       else:
         errback(e) # not an instance of UnknownAppID - nothing we can do here
@@ -120,7 +120,7 @@ def _xmlrpc_thread(method, args, callback, errback=None):
     for part in parts:
       proxy = getattr(proxy, part)
     return callback(proxy(*args))
-  except xmlrpclib.Fault, e:
+  except xmlrpc.client.Fault as e:
     if e.faultCode == 404:
       e = UnknownAppID()
     if errback is not None:
@@ -138,9 +138,9 @@ def ServerProxy(url, *args, **kwargs):
   t = TimeoutTransport()
   t.timeout = kwargs.pop('timeout', 20)
   kwargs['transport'] = t
-  return xmlrpclib.ServerProxy(url, *args, **kwargs)
+  return xmlrpc.client.ServerProxy(url, *args, **kwargs)
 
-class TimeoutTransport(xmlrpclib.Transport):
+class TimeoutTransport(xmlrpc.client.Transport):
   def make_connection(self, host):
     if hexversion < 0x02070000:
         conn = TimeoutHTTP(host)
@@ -150,12 +150,12 @@ class TimeoutTransport(xmlrpclib.Transport):
         conn.timeout = self.timeout
     return conn
 
-class TimeoutHTTPConnection(httplib.HTTPConnection):
+class TimeoutHTTPConnection(http.client.HTTPConnection):
   def connect(self):
-    httplib.HTTPConnection.connect(self)
+    http.client.HTTPConnection.connect(self)
     self.sock.settimeout(self.timeout)
   
-class TimeoutHTTP(httplib.HTTP):
+class TimeoutHTTP(http.client.HTTP):
   _connection_class = TimeoutHTTPConnection
   
   def set_timeout(self, timeout):
