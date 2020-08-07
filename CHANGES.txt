@@ -11,7 +11,7 @@ New:
     argument was supplied. They would spin off a thread, later calling
     the callback.
 
-    Now those methods take an `async` parameter, when True, will spin off
+    Now those methods take an `is_async` parameter, when True, will spin off
     the XML-RPC request in another thread, calling `callback(result)` when
     complete or `errback(exception)` if an error occurred.
 
