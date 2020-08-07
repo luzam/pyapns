@@ -115,11 +115,11 @@ Configuring for pylons is just as simple, but automatic provisioning isn't possi
 
 For explanations of the configuration variables see the docs for `pyapns.client.configure`.
 
-Each of these functions can be called synchronously and asynchronously. To make them perform asynchronously simply supply a callback and pass `async=True` to the function. The request will then be made in another thread and your callback will be executed with the results. When calling asynchronously no value will be returned:
+Each of these functions can be called synchronously and asynchronously. To make them perform asynchronously simply supply a callback and pass `is_async=True` to the function. The request will then be made in another thread and your callback will be executed with the results. When calling asynchronously no value will be returned:
 
     def got_feedback(tuples):
       trim_inactive_tokens(tuples)
-    feedback('myapp', async=True, callback=got_feedback)
+    feedback('myapp', is_async=True, callback=got_feedback)
 
 ### `pyapns.client.configure(opts)`
 
@@ -135,7 +135,7 @@ Each of these functions can be called synchronously and asynchronously. To make 
         INITIAL     - A List of tuples to be supplied to provision when
                       the first configuration happens.
 
-### `pyapns.client.provision(app_id, path_to_cert_or_cert, environment, timeout=15, async=False, callback=None, errback=None)`
+### `pyapns.client.provision(app_id, path_to_cert_or_cert, environment, timeout=15, is_async=False, callback=None, errback=None)`
 
     Provisions the app_id and initializes a connection to the APNS server.
     Multiple calls to this function will be ignored by the pyapns daemon
@@ -149,7 +149,7 @@ Each of these functions can be called synchronously and asynchronously. To make 
         environment            either 'sandbox' or 'production'
         timeout                number of seconds to timeout connection
                                attempts to the APPLE APS SERVER
-        async                  pass something truthy to execute the request in a 
+        is_async                  pass something truthy to execute the request in a 
                                background thread
         callback               a function to be executed with the result
         errback                a function to be executed with the error in case of an error
@@ -157,7 +157,7 @@ Each of these functions can be called synchronously and asynchronously. To make 
     Returns:
         None
 
-### `pyapns.client.notify(app_id, tokens, notifications, async=False, callback=None, errback=None)`
+### `pyapns.client.notify(app_id, tokens, notifications, is_async=False, callback=None, errback=None)`
 
     Sends push notifications to the APNS server. Multiple 
     notifications can be sent by sending pairing the token/notification
@@ -168,7 +168,7 @@ Each of these functions can be called synchronously and asynchronously. To make 
         tokens                 token to send the notification or a 
                                list of tokens
         notifications          notification dict or a list of notification dicts
-        async                  pass something truthy to execute the request in a 
+        is_async                  pass something truthy to execute the request in a 
                                background thread
         callback               a function to be executed with the result when done
         errback                a function to be executed with the error in case of an error
@@ -176,14 +176,14 @@ Each of these functions can be called synchronously and asynchronously. To make 
       Returns:
           None
 
-### `pyapns.client.feedback(app_id, async=False, callback=None, errback=None)`
+### `pyapns.client.feedback(app_id, is_async=False, callback=None, errback=None)`
 
     Retrieves a list of inactive tokens from the APNS server and the times
     it thinks they went inactive.
     
     Arguments:
         app_id                 the app_id to query
-        async                  pass something truthy to execute the request in 
+        is_async                  pass something truthy to execute the request in 
                                a background thread
         callback               a function to be executed with the result when 
                                feedbacks are done fetching

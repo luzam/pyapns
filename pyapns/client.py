@@ -77,11 +77,11 @@ def default_callback(func):
 
 @default_callback
 @reprovision_and_retry
-def provision(app_id, path_to_cert, environment, timeout=15, async=False, 
+def provision(app_id, path_to_cert, environment, timeout=15, is_async=False, 
               callback=None, errback=None):
   args = [app_id, path_to_cert, environment, timeout]
   f_args = ['provision', args, callback, errback]
-  if not async:
+  if not is_async:
     return _xmlrpc_thread(*f_args)
   t = threading.Thread(target=_xmlrpc_thread, args=f_args)
   t.daemon = True
@@ -89,11 +89,11 @@ def provision(app_id, path_to_cert, environment, timeout=15, async=False,
 
 @default_callback
 @reprovision_and_retry
-def notify(app_id, tokens, notifications, async=False, callback=None, 
+def notify(app_id, tokens, notifications, is_async=False, callback=None, 
            errback=None):
   args = [app_id, tokens, notifications]
   f_args = ['notify', args, callback, errback]
-  if not async:
+  if not is_async:
     return _xmlrpc_thread(*f_args)
   t = threading.Thread(target=_xmlrpc_thread, args=f_args)
   t.daemon = True
@@ -101,10 +101,10 @@ def notify(app_id, tokens, notifications, async=False, callback=None,
 
 @default_callback
 @reprovision_and_retry
-def feedback(app_id, async=False, callback=None, errback=None):
+def feedback(app_id, is_async=False, callback=None, errback=None):
   args = [app_id]
   f_args = ['feedback', args, callback, errback]
-  if not async:
+  if not is_async:
     return _xmlrpc_thread(*f_args)
   t = threading.Thread(target=_xmlrpc_thread, args=f_args)
   t.daemon = True
